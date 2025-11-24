@@ -58,6 +58,12 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
+  // Redirect to login if trying to access dashboard without authentication
+  if (!isLoading && !isAuthenticated && window.location.pathname.startsWith('/dashboard')) {
+    window.location.href = '/api/login';
+    return null;
+  }
+
   return (
     <Switch>
       {isLoading || !isAuthenticated ? (
