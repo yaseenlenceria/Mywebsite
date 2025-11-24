@@ -99,14 +99,14 @@ export default function Invoices() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold" data-testid="text-page-title">Invoices</h1>
-          <p className="text-muted-foreground">Manage client invoices and payments</p>
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight" data-testid="text-page-title">Invoices</h1>
+          <p className="text-lg text-muted-foreground">Manage client invoices and track payments</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button data-testid="button-new-invoice">
+            <Button size="default" data-testid="button-new-invoice">
               <Plus className="mr-2 h-4 w-4" />
               New Invoice
             </Button>
@@ -241,59 +241,101 @@ export default function Invoices() {
       </div>
 
       {isLoading ? (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
-            <Card key={i}>
+            <Card key={i} className="overflow-hidden">
               <CardContent className="p-6">
-                <div className="h-6 w-3/4 animate-pulse rounded bg-muted mb-2" />
-                <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : invoices && invoices.length > 0 ? (
-        <div className="space-y-4">
-          {invoices.map((invoice) => (
-            <Card key={invoice.id} className="hover-elevate" data-testid={`card-invoice-${invoice.id}`}>
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <FileText className="h-5 w-5 text-muted-foreground" />
-                      <h3 className="text-lg font-semibold" data-testid={`text-invoice-number-${invoice.id}`}>
-                        {invoice.invoiceNumber}
-                      </h3>
-                      <Badge variant="outline" className={statusColors[invoice.status as keyof typeof statusColors]}>
-                        {invoice.status}
-                      </Badge>
-                    </div>
-                    <div className="grid gap-2 text-sm text-muted-foreground">
-                      <p>Amount: <span className="font-semibold text-foreground">${invoice.amount}</span></p>
-                      <p>Due Date: {new Date(invoice.dueDate).toLocaleDateString()}</p>
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="h-12 w-12 animate-pulse rounded-lg bg-muted" />
+                    <div className="space-y-2 flex-1">
+                      <div className="h-5 w-40 animate-pulse rounded bg-muted" />
+                      <div className="h-4 w-32 animate-pulse rounded bg-muted" />
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline">
-                      <Download className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  <div className="h-6 w-20 animate-pulse rounded-full bg-muted" />
+                  <div className="h-8 w-32 animate-pulse rounded bg-muted" />
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
+      ) : invoices && invoices.length > 0 ? (
+        <div className="space-y-3">
+          {invoices.map((invoice) => {
+            const clientName = clients?.find(c => c.id === invoice.clientId)?.name;
+            const isOverdue = new Date(invoice.dueDate) < new Date() && invoice.status !== 'paid';
+            return (
+              <Card 
+                key={invoice.id} 
+                className="group overflow-hidden hover-elevate active-elevate-2 transition-all" 
+                data-testid={`card-invoice-${invoice.id}`}
+              >
+                <CardContent className="p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div className="flex items-start gap-4 flex-1 min-w-0">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                        <FileText className="h-6 w-6 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0 space-y-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-base font-semibold" data-testid={`text-invoice-number-${invoice.id}`}>
+                            {invoice.invoiceNumber}
+                          </h3>
+                          <Badge 
+                            variant="outline" 
+                            className={`${statusColors[invoice.status as keyof typeof statusColors]}`}
+                          >
+                            {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                          </Badge>
+                        </div>
+                        {clientName && (
+                          <p className="text-sm text-muted-foreground">
+                            {clientName}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
+                          <span>Due {new Date(invoice.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                          {isOverdue && (
+                            <Badge variant="destructive" className="text-xs">
+                              Overdue
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 sm:flex-col sm:items-end">
+                      <div className="text-right">
+                        <div className="text-2xl font-bold">${parseFloat(invoice.amount).toLocaleString()}</div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="ghost">
+                          <Download className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="ghost">
+                          <Send className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       ) : (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <FileText className="h-16 w-16 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No invoices yet</h3>
-            <p className="text-sm text-muted-foreground mb-4">Create your first invoice to get started</p>
-            <Button onClick={() => setDialogOpen(true)}>
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted/50 mb-4">
+              <FileText className="h-10 w-10 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">No invoices yet</h3>
+            <p className="text-sm text-muted-foreground mb-6 max-w-sm">
+              Start billing your clients by creating your first invoice
+            </p>
+            <Button onClick={() => setDialogOpen(true)} size="default">
               <Plus className="mr-2 h-4 w-4" />
-              New Invoice
+              Create Invoice
             </Button>
           </CardContent>
         </Card>

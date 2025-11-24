@@ -168,14 +168,14 @@ export default function Projects() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold" data-testid="text-page-title">Projects</h1>
-          <p className="text-muted-foreground">Manage your client projects</p>
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight" data-testid="text-page-title">Projects</h1>
+          <p className="text-lg text-muted-foreground">Manage your client projects and deliverables</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button data-testid="button-new-project" onClick={() => { setEditingProject(null); form.reset(); }}>
+            <Button size="default" data-testid="button-new-project" onClick={() => { setEditingProject(null); form.reset(); }}>
               <Plus className="mr-2 h-4 w-4" />
               New Project
             </Button>
@@ -303,53 +303,92 @@ export default function Projects() {
       </div>
 
       {isLoading ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[...Array(6)].map((_, i) => (
-            <Card key={i}>
-              <CardHeader>
-                <div className="h-6 w-3/4 animate-pulse rounded bg-muted" />
+            <Card key={i} className="overflow-hidden">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="h-6 w-32 animate-pulse rounded bg-muted" />
+                  <div className="h-5 w-20 animate-pulse rounded-full bg-muted" />
+                </div>
               </CardHeader>
-              <CardContent>
-                <div className="h-4 w-full animate-pulse rounded bg-muted mb-2" />
-                <div className="h-4 w-2/3 animate-pulse rounded bg-muted" />
+              <CardContent className="space-y-2">
+                <div className="h-4 w-full animate-pulse rounded bg-muted" />
+                <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
+                <div className="mt-4 h-3 w-1/2 animate-pulse rounded bg-muted" />
               </CardContent>
             </Card>
           ))}
         </div>
       ) : projects && projects.length > 0 ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
-            <Card key={project.id} className="hover-elevate cursor-pointer" onClick={() => handleEdit(project)} data-testid={`card-project-${project.id}`}>
-              <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Folder className="h-4 w-4" />
-                  {project.title}
-                </CardTitle>
-                <Badge variant="outline" className={statusColors[project.status as keyof typeof statusColors]}>
-                  {project.status.replace("_", " ")}
-                </Badge>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{project.description}</p>
-                {project.deadline && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Calendar className="h-3 w-3" />
-                    Deadline: {new Date(project.deadline).toLocaleDateString()}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.map((project) => {
+            const clientName = clients?.find(c => c.id === project.clientId)?.name;
+            return (
+              <Card 
+                key={project.id} 
+                className="group overflow-hidden hover-elevate active-elevate-2 cursor-pointer transition-all" 
+                onClick={() => handleEdit(project)} 
+                data-testid={`card-project-${project.id}`}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                        <Folder className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-base font-semibold line-clamp-1 mb-1">
+                          {project.title}
+                        </CardTitle>
+                        {clientName && (
+                          <p className="text-xs text-muted-foreground">
+                            {clientName}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <Badge 
+                      variant="outline" 
+                      className={`${statusColors[project.status as keyof typeof statusColors]} shrink-0`}
+                    >
+                      {project.status === "in_progress" ? "In Progress" : project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                    </Badge>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          ))}
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
+                    {project.description || "No description provided"}
+                  </p>
+                  {project.deadline && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground pt-2 border-t">
+                      <Calendar className="h-3.5 w-3.5" />
+                      <span>Due {new Date(project.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                    </div>
+                  )}
+                  {project.showOnPortfolio && (
+                    <Badge variant="secondary" className="text-xs">
+                      Portfolio
+                    </Badge>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       ) : (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <Folder className="h-16 w-16 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No projects yet</h3>
-            <p className="text-sm text-muted-foreground mb-4">Create your first project to get started</p>
-            <Button onClick={() => setDialogOpen(true)}>
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted/50 mb-4">
+              <Folder className="h-10 w-10 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">No projects yet</h3>
+            <p className="text-sm text-muted-foreground mb-6 max-w-sm">
+              Start organizing your work by creating your first project
+            </p>
+            <Button onClick={() => setDialogOpen(true)} size="default">
               <Plus className="mr-2 h-4 w-4" />
-              New Project
+              Create Project
             </Button>
           </CardContent>
         </Card>

@@ -133,14 +133,14 @@ export default function Clients() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold" data-testid="text-page-title">Clients</h1>
-          <p className="text-muted-foreground">Manage your client relationships</p>
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight" data-testid="text-page-title">Clients</h1>
+          <p className="text-lg text-muted-foreground">Manage your client relationships and contacts</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button data-testid="button-new-client" onClick={() => { setEditingClient(null); form.reset(); }}>
+            <Button size="default" data-testid="button-new-client" onClick={() => { setEditingClient(null); form.reset(); }}>
               <Plus className="mr-2 h-4 w-4" />
               New Client
             </Button>
@@ -249,69 +249,92 @@ export default function Clients() {
       </div>
 
       {isLoading ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[...Array(6)].map((_, i) => (
-            <Card key={i}>
-              <CardHeader>
-                <div className="h-6 w-3/4 animate-pulse rounded bg-muted" />
+            <Card key={i} className="overflow-hidden">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 animate-pulse rounded-full bg-muted" />
+                  <div className="h-6 w-32 animate-pulse rounded bg-muted" />
+                </div>
               </CardHeader>
-              <CardContent>
-                <div className="h-4 w-full animate-pulse rounded bg-muted mb-2" />
+              <CardContent className="space-y-2">
+                <div className="h-4 w-full animate-pulse rounded bg-muted" />
+                <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
                 <div className="h-4 w-2/3 animate-pulse rounded bg-muted" />
               </CardContent>
             </Card>
           ))}
         </div>
       ) : clients && clients.length > 0 ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {clients.map((client) => (
-            <Card key={client.id} className="hover-elevate cursor-pointer" onClick={() => handleEdit(client)} data-testid={`card-client-${client.id}`}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  {client.name}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {clients.map((client) => {
+            const initials = client.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            return (
+              <Card 
+                key={client.id} 
+                className="group overflow-hidden hover-elevate active-elevate-2 cursor-pointer transition-all" 
+                onClick={() => handleEdit(client)} 
+                data-testid={`card-client-${client.id}`}
+              >
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-2 border-primary/20">
+                      <span className="text-sm font-bold text-primary">{initials}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <CardTitle className="text-base font-semibold line-clamp-1">
+                        {client.name}
+                      </CardTitle>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-2.5 text-sm">
                   {client.email && (
                     <div className="flex items-center gap-2 text-muted-foreground">
-                      <Mail className="h-4 w-4" />
-                      {client.email}
+                      <Mail className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{client.email}</span>
                     </div>
                   )}
                   {client.phone && (
                     <div className="flex items-center gap-2 text-muted-foreground">
-                      <Phone className="h-4 w-4" />
-                      {client.phone}
+                      <Phone className="h-4 w-4 shrink-0" />
+                      <span>{client.phone}</span>
                     </div>
                   )}
                   {client.website && (
                     <div className="flex items-center gap-2 text-muted-foreground">
-                      <Globe className="h-4 w-4" />
-                      <span className="truncate">{client.website}</span>
+                      <Globe className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{client.website.replace(/^https?:\/\//, '')}</span>
                     </div>
                   )}
                   {client.whatsapp && (
                     <div className="flex items-center gap-2 text-muted-foreground">
-                      <MessageCircle className="h-4 w-4" />
-                      WhatsApp
+                      <MessageCircle className="h-4 w-4 shrink-0" />
+                      <span>WhatsApp</span>
                     </div>
                   )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  {!client.email && !client.phone && !client.website && !client.whatsapp && (
+                    <p className="text-xs text-muted-foreground italic">No contact details</p>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       ) : (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <Users className="h-16 w-16 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No clients yet</h3>
-            <p className="text-sm text-muted-foreground mb-4">Add your first client to get started</p>
-            <Button onClick={() => setDialogOpen(true)}>
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted/50 mb-4">
+              <Users className="h-10 w-10 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">No clients yet</h3>
+            <p className="text-sm text-muted-foreground mb-6 max-w-sm">
+              Build your client base by adding your first client contact
+            </p>
+            <Button onClick={() => setDialogOpen(true)} size="default">
               <Plus className="mr-2 h-4 w-4" />
-              New Client
+              Add Client
             </Button>
           </CardContent>
         </Card>
