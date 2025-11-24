@@ -1,0 +1,329 @@
+ou are an expert full-stack engineer, UX designer, SaaS architect, and SEO strategist.
+Your task is to CREATE an entire full-stack web app for me that includes:
+
+🔵 PART 1 — PUBLIC WEBSITE (SEO + Portfolio + Blog)
+
+Build a public site that will rank on Google and show my skills.
+It must include:
+
+Pages
+
+Home
+
+About Me
+
+Services
+
+Portfolio (auto-pulls from dashboard database)
+
+Case Studies
+
+Blog (SEO optimized)
+
+Contact
+
+Testimonials
+
+Privacy Policy
+
+Terms
+
+Home Page Must Include
+
+Hero section with my title: “Shopify Expert — SEO Specialist — AI Web App Developer”
+
+A section: “Current Projects I’m Working On” auto-loaded from database
+
+Testimonials slider
+
+Link to portfolio
+
+CTA buttons (WhatsApp, Hire Me, Book a Call)
+
+Featured blogs
+
+SEO schema markup
+
+Fast loading (LCP < 2s)
+
+🟢 PART 2 — PRIVATE DASHBOARD (My Freelancer OS)
+
+Accessible only after login via /dashboard.
+
+Include ALL these modules:
+
+1. Projects Manager
+
+Add/edit/delete projects
+
+Status: Pending, In Progress, Completed
+
+Upload docs/screenshots
+
+Store deadlines
+
+Automatically push selected projects to PUBLIC portfolio
+
+2. Invoice System
+
+Create invoices
+
+Download invoice PDF
+
+Send invoice via email
+
+Generate invoice numbers
+
+Track paid / pending / overdue
+
+Add multiple line items
+
+Create branded invoice layout
+
+Auto-add invoices to monthly earnings
+
+3. Expenses Manager
+
+Add expenses
+
+Categories: tools, services, travel, hosting, etc.
+
+Track monthly + yearly totals
+
+Expense graphs
+
+4. Income Tracker
+
+Add income (or auto-record from invoice)
+
+Filter by client
+
+Monthly earnings graph
+
+Yearly earnings summary
+
+5. Cashflow Dashboard
+
+Show:
+
+Revenue this month
+
+Expenses this month
+
+Profit
+
+All-time revenue
+
+All-time profit
+
+Breakdown by client
+
+6. Clients CRM
+
+Client details
+
+Website
+
+WhatsApp
+
+Email
+
+Notes field
+
+Link all their invoices and projects
+
+7. Task Manager
+
+Daily tasks
+
+Project-related tasks
+
+Status tracking
+
+Create weekly reports
+
+8. Built-in AI Assistant
+
+The AI should:
+
+Generate proposals
+
+Write invoices
+
+Analyze cashflow
+
+Recommend SEO titles
+
+Create project summaries
+
+Help write blogs
+
+Suggest improvements
+
+9. Authentication System
+
+Sign in
+
+Sign up
+
+Reset password
+
+JWT or Supabase Auth
+
+Protect dashboard routes
+
+🟣 PART 3 — TECH STACK (USE EXACTLY THIS)
+
+Use the following stack:
+
+Next.js 15 (App Router)
+
+Tailwind CSS
+
+Supabase (Database + Auth)
+
+Prisma ORM
+
+ShadCN UI
+
+Stripe (optional for upgrades)
+
+Resend API (for emails)
+
+🟠 PART 4 — DATABASE STRUCTURE
+
+Create all Prisma schemas + migrations for these tables:
+
+Users
+
+id
+name
+email
+password
+created_at
+
+Projects
+
+id
+title
+description
+status
+start_date
+end_date
+show_on_portfolio
+cover_image
+client_id
+created_at
+
+Invoices
+
+id
+invoice_number
+client_id
+project_id
+amount
+due_date
+status
+pdf_url
+created_at
+
+InvoiceItems
+
+invoice_id
+description
+quantity
+rate
+total
+
+Expenses
+
+id
+category
+amount
+description
+date
+
+Income
+
+id
+client_id
+amount
+invoice_id
+date
+
+Clients
+
+id
+name
+email
+phone
+website
+notes
+
+BlogPosts
+
+id
+title
+slug
+content
+excerpt
+published
+created_at
+
+🔴 PART 5 — FEATURES & REQUIREMENTS
+Must Have
+
+Fully responsive
+
+Modern UI (ShadCN + Tailwind)
+
+Dark + light mode
+
+Protect dashboard routes
+
+Auto-generate SEO tags
+
+Fast performance
+
+API routes for CRUD operations
+
+PDF invoice generator
+
+Charts for earnings + expenses (use Chart.js or Recharts)
+
+Deliverables to Generate
+
+Full folder structure
+
+All pages in Next.js
+
+All dashboard UI components
+
+All API routes
+
+Full Prisma schema
+
+Full Supabase migration
+
+Tailwind config
+
+ShadCN UI setup
+
+Dark/light mode toggle
+
+SEO meta system
+
+Example sample data
+
+Example invoice PDF template
+
+Sitemap + robots.txt
+
+Blog markdown example
+
+Deployment instructions (Vercel)
+
+Overall Goal
+
+Create my personal freelancer SaaS system in one complete solution.
+The project must be clean, professional, scalable, and ready for production.
