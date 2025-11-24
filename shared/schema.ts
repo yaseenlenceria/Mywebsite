@@ -63,7 +63,21 @@ export const insertClientSchema = createInsertSchema(clients).omit({
   updatedAt: true,
 });
 
+// Request payload schema - omits userId (injected server-side)
+export const insertClientPayloadSchema = insertClientSchema.omit({ userId: true }).strip();
+
+export const updateClientSchema = insertClientSchema.pick({
+  name: true,
+  email: true,
+  phone: true,
+  website: true,
+  whatsapp: true,
+  notes: true,
+}).partial().strict();
+
 export type InsertClient = z.infer<typeof insertClientSchema>;
+export type InsertClientPayload = z.infer<typeof insertClientPayloadSchema>;
+export type UpdateClient = z.infer<typeof updateClientSchema>;
 export type Client = typeof clients.$inferSelect;
 
 // ========== PROJECTS TABLE ==========
@@ -91,7 +105,25 @@ export const insertProjectSchema = createInsertSchema(projects).omit({
   updatedAt: true,
 });
 
+// Request payload schema - omits userId (injected server-side)
+export const insertProjectPayloadSchema = insertProjectSchema.omit({ userId: true }).strip();
+
+export const updateProjectSchema = insertProjectSchema.pick({
+  clientId: true,
+  title: true,
+  description: true,
+  status: true,
+  startDate: true,
+  endDate: true,
+  deadline: true,
+  coverImage: true,
+  documents: true,
+  // showOnPortfolio is EXCLUDED - system-managed flag
+}).partial().strict();
+
 export type InsertProject = z.infer<typeof insertProjectSchema>;
+export type InsertProjectPayload = z.infer<typeof insertProjectPayloadSchema>;
+export type UpdateProject = z.infer<typeof updateProjectSchema>;
 export type Project = typeof projects.$inferSelect;
 
 // ========== INVOICES TABLE ==========
@@ -117,7 +149,23 @@ export const insertInvoiceSchema = createInsertSchema(invoices).omit({
   updatedAt: true,
 });
 
+// Request payload schema - omits userId (injected server-side)
+export const insertInvoicePayloadSchema = insertInvoiceSchema.omit({ userId: true }).strip();
+
+export const updateInvoiceSchema = insertInvoiceSchema.pick({
+  clientId: true,
+  projectId: true,
+  dueDate: true,
+  status: true,
+  notes: true,
+  // invoiceNumber is EXCLUDED - immutable once issued
+  // amount is EXCLUDED - computed from invoice items
+  // pdfUrl is EXCLUDED - system-generated
+}).partial().strict();
+
 export type InsertInvoice = z.infer<typeof insertInvoiceSchema>;
+export type InsertInvoicePayload = z.infer<typeof insertInvoicePayloadSchema>;
+export type UpdateInvoice = z.infer<typeof updateInvoiceSchema>;
 export type Invoice = typeof invoices.$inferSelect;
 
 // ========== INVOICE ITEMS TABLE ==========
@@ -137,7 +185,19 @@ export const insertInvoiceItemSchema = createInsertSchema(invoiceItems).omit({
   createdAt: true,
 });
 
+// Request payload schema - omits invoiceId (injected server-side)
+export const insertInvoiceItemPayloadSchema = insertInvoiceItemSchema.omit({ invoiceId: true }).strip();
+
+export const updateInvoiceItemSchema = insertInvoiceItemSchema.pick({
+  description: true,
+  quantity: true,
+  rate: true,
+  total: true,
+}).partial().strict();
+
 export type InsertInvoiceItem = z.infer<typeof insertInvoiceItemSchema>;
+export type InsertInvoiceItemPayload = z.infer<typeof insertInvoiceItemPayloadSchema>;
+export type UpdateInvoiceItem = z.infer<typeof updateInvoiceItemSchema>;
 export type InvoiceItem = typeof invoiceItems.$inferSelect;
 
 // ========== EXPENSES TABLE ==========
@@ -159,7 +219,19 @@ export const insertExpenseSchema = createInsertSchema(expenses).omit({
   updatedAt: true,
 });
 
+// Request payload schema - omits userId (injected server-side)
+export const insertExpensePayloadSchema = insertExpenseSchema.omit({ userId: true }).strip();
+
+export const updateExpenseSchema = insertExpenseSchema.pick({
+  category: true,
+  amount: true,
+  description: true,
+  date: true,
+}).partial().strict();
+
 export type InsertExpense = z.infer<typeof insertExpenseSchema>;
+export type InsertExpensePayload = z.infer<typeof insertExpensePayloadSchema>;
+export type UpdateExpense = z.infer<typeof updateExpenseSchema>;
 export type Expense = typeof expenses.$inferSelect;
 
 // ========== INCOME TABLE ==========
@@ -182,7 +254,20 @@ export const insertIncomeSchema = createInsertSchema(income).omit({
   updatedAt: true,
 });
 
+// Request payload schema - omits userId (injected server-side)
+export const insertIncomePayloadSchema = insertIncomeSchema.omit({ userId: true }).strip();
+
+export const updateIncomeSchema = insertIncomeSchema.pick({
+  clientId: true,
+  invoiceId: true,
+  amount: true,
+  description: true,
+  date: true,
+}).partial().strict();
+
 export type InsertIncome = z.infer<typeof insertIncomeSchema>;
+export type InsertIncomePayload = z.infer<typeof insertIncomePayloadSchema>;
+export type UpdateIncome = z.infer<typeof updateIncomeSchema>;
 export type Income = typeof income.$inferSelect;
 
 // ========== TASKS TABLE ==========
@@ -205,7 +290,20 @@ export const insertTaskSchema = createInsertSchema(tasks).omit({
   updatedAt: true,
 });
 
+// Request payload schema - omits userId (injected server-side)
+export const insertTaskPayloadSchema = insertTaskSchema.omit({ userId: true }).strip();
+
+export const updateTaskSchema = insertTaskSchema.pick({
+  projectId: true,
+  title: true,
+  description: true,
+  status: true,
+  dueDate: true,
+}).partial().strict();
+
 export type InsertTask = z.infer<typeof insertTaskSchema>;
+export type InsertTaskPayload = z.infer<typeof insertTaskPayloadSchema>;
+export type UpdateTask = z.infer<typeof updateTaskSchema>;
 export type Task = typeof tasks.$inferSelect;
 
 // ========== BLOG POSTS TABLE ==========
@@ -230,7 +328,22 @@ export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({
   updatedAt: true,
 });
 
+// Request payload schema - omits userId (injected server-side)
+export const insertBlogPostPayloadSchema = insertBlogPostSchema.omit({ userId: true }).strip();
+
+export const updateBlogPostSchema = insertBlogPostSchema.pick({
+  title: true,
+  slug: true,
+  content: true,
+  excerpt: true,
+  coverImage: true,
+  published: true,
+  tags: true,
+}).partial().strict();
+
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
+export type InsertBlogPostPayload = z.infer<typeof insertBlogPostPayloadSchema>;
+export type UpdateBlogPost = z.infer<typeof updateBlogPostSchema>;
 export type BlogPost = typeof blogPosts.$inferSelect;
 
 // ========== TESTIMONIALS TABLE ==========
@@ -254,7 +367,21 @@ export const insertTestimonialSchema = createInsertSchema(testimonials).omit({
   updatedAt: true,
 });
 
+// Request payload schema - omits userId (injected server-side)
+export const insertTestimonialPayloadSchema = insertTestimonialSchema.omit({ userId: true }).strip();
+
+export const updateTestimonialSchema = insertTestimonialSchema.pick({
+  clientName: true,
+  clientCompany: true,
+  clientPhoto: true,
+  quote: true,
+  rating: true,
+  featured: true,
+}).partial().strict();
+
 export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
+export type InsertTestimonialPayload = z.infer<typeof insertTestimonialPayloadSchema>;
+export type UpdateTestimonial = z.infer<typeof updateTestimonialSchema>;
 export type Testimonial = typeof testimonials.$inferSelect;
 
 // ========== RELATIONS (Declared at end to avoid forward reference errors) ==========
