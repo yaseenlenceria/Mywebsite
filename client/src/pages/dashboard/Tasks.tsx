@@ -196,14 +196,14 @@ export default function Tasks() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Project (Optional)</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value || ""}>
+                        <Select onValueChange={(value) => field.onChange(value === "none" ? undefined : value)} value={field.value || "none"}>
                           <FormControl>
                             <SelectTrigger data-testid="select-project">
                               <SelectValue placeholder="Select project" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="">None</SelectItem>
+                            <SelectItem value="none">No project</SelectItem>
                             {projects?.map((project) => (
                               <SelectItem key={project.id} value={project.id}>
                                 {project.title}

@@ -243,15 +243,15 @@ export default function Projects() {
                     name="clientId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Client</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value || ""}>
+                        <FormLabel>Client (Optional)</FormLabel>
+                        <Select onValueChange={(value) => field.onChange(value === "none" ? undefined : value)} value={field.value || "none"}>
                           <FormControl>
                             <SelectTrigger data-testid="select-client">
                               <SelectValue placeholder="Select client" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="">None</SelectItem>
+                            <SelectItem value="none">No client</SelectItem>
                             {clients?.map((client) => (
                               <SelectItem key={client.id} value={client.id}>
                                 {client.name}
