@@ -1,3 +1,4 @@
+import type React from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -69,62 +70,109 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Router() {
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
 
-  // Redirect to login if trying to access dashboard without authentication
-  if (!isLoading && !isAuthenticated && window.location.pathname.startsWith('/dashboard')) {
-    window.location.href = '/api/login';
+  if (isLoading) {
     return null;
   }
 
+  if (!isAuthenticated) {
+    window.location.href = "/api/login";
+    return null;
+  }
+
+  return <>{children}</>;
+}
+
+function Router() {
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <>
-          <Route path="/" component={Landing} />
-          <Route path="/about" component={About} />
-          <Route path="/services" component={Services} />
-          <Route path="/portfolio" component={Portfolio} />
-          <Route path="/case-studies" component={CaseStudies} />
-          <Route path="/blog" component={Blog} />
-          <Route path="/blog/:slug" component={BlogPost} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/testimonials" component={Testimonials} />
-          <Route path="/privacy" component={Privacy} />
-          <Route path="/terms" component={Terms} />
-        </>
-      ) : (
-        <>
-          <Route path="/">
-            {() => <DashboardLayout><Cashflow /></DashboardLayout>}
-          </Route>
-          <Route path="/dashboard">
-            {() => <DashboardLayout><Cashflow /></DashboardLayout>}
-          </Route>
-          <Route path="/dashboard/projects">
-            {() => <DashboardLayout><Projects /></DashboardLayout>}
-          </Route>
-          <Route path="/dashboard/invoices">
-            {() => <DashboardLayout><Invoices /></DashboardLayout>}
-          </Route>
-          <Route path="/dashboard/income">
-            {() => <DashboardLayout><Income /></DashboardLayout>}
-          </Route>
-          <Route path="/dashboard/expenses">
-            {() => <DashboardLayout><Expenses /></DashboardLayout>}
-          </Route>
-          <Route path="/dashboard/clients">
-            {() => <DashboardLayout><Clients /></DashboardLayout>}
-          </Route>
-          <Route path="/dashboard/tasks">
-            {() => <DashboardLayout><Tasks /></DashboardLayout>}
-          </Route>
-          <Route path="/dashboard/ai-assistant">
-            {() => <DashboardLayout><AIAssistant /></DashboardLayout>}
-          </Route>
-        </>
-      )}
+      <Route path="/dashboard/projects">
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <Projects />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/dashboard/invoices">
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <Invoices />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/dashboard/income">
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <Income />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/dashboard/expenses">
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <Expenses />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/dashboard/clients">
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <Clients />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/dashboard/tasks">
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <Tasks />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/dashboard/ai-assistant">
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <AIAssistant />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/dashboard">
+        {() => (
+          <ProtectedRoute>
+            <DashboardLayout>
+              <Cashflow />
+            </DashboardLayout>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/about" component={About} />
+      <Route path="/services" component={Services} />
+      <Route path="/portfolio" component={Portfolio} />
+      <Route path="/case-studies" component={CaseStudies} />
+      <Route path="/blog" component={Blog} />
+      <Route path="/blog/:slug" component={BlogPost} />
+      <Route path="/contact" component={Contact} />
+      <Route path="/testimonials" component={Testimonials} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
+      <Route path="/">
+        {() => <Landing />}
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );
