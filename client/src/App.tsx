@@ -39,15 +39,29 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider style={style as React.CSSProperties}>
-      <div className="flex h-screen w-full">
+      <div className="relative flex min-h-screen w-full overflow-hidden bg-gradient-to-br from-background via-background to-muted/30">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,70,229,0.12),transparent_45%)]"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(34,197,94,0.1),transparent_35%)]"
+        />
         <AppSidebar />
-        <div className="flex flex-col flex-1">
-          <header className="flex items-center justify-between gap-2 border-b px-6 py-3">
-            <SidebarTrigger data-testid="button-sidebar-toggle" />
+        <div className="relative z-10 flex flex-1 flex-col">
+          <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b bg-card/85 px-6 py-4 shadow-sm backdrop-blur">
+            <div className="flex items-center gap-3">
+              <SidebarTrigger data-testid="button-sidebar-toggle" />
+              <div className="h-8 w-px bg-border" aria-hidden />
+              <span className="text-sm font-medium text-muted-foreground">Freelancer OS</span>
+            </div>
             <ThemeToggle />
           </header>
-          <main className="flex-1 overflow-auto p-8">
-            {children}
+          <main className="flex-1 overflow-auto">
+            <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 py-8 lg:px-10 lg:py-12">
+              {children}
+            </div>
           </main>
         </div>
       </div>
