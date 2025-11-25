@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import express from 'express';
+import express, { type Request, type Response } from 'express';
 import { app } from '../server/app';
 import { registerRoutes } from '../server/routes';
 
@@ -15,7 +15,7 @@ const possiblePaths = [
   path.join('/var/task', 'dist/public'),
 ];
 
-let distPath = null;
+let distPath: string | null = null;
 for (const p of possiblePaths) {
   if (fs.existsSync(p)) {
     distPath = p;
@@ -41,7 +41,7 @@ async function initialize() {
           return next();
         }
 
-        const indexPath = path.join(distPath, 'index.html');
+        const indexPath = path.join(distPath as string, 'index.html');
         if (fs.existsSync(indexPath)) {
           res.sendFile(indexPath);
         } else {
@@ -57,7 +57,7 @@ async function initialize() {
 }
 
 // Vercel serverless function handler
-export default async function handler(req, res) {
+export default async function handler(req: Request, res: Response) {
   await initialize();
   app(req, res);
 }
