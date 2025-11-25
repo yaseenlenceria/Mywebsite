@@ -39,15 +39,21 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider style={style as React.CSSProperties}>
-      <div className="flex h-screen w-full">
+      <div className="flex min-h-screen w-full bg-gradient-to-br from-muted/40 via-background to-background">
         <AppSidebar />
-        <div className="flex flex-col flex-1">
-          <header className="flex items-center justify-between gap-2 border-b px-6 py-3">
-            <SidebarTrigger data-testid="button-sidebar-toggle" />
+        <div className="flex flex-1 flex-col">
+          <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b bg-background/80 px-6 py-4 backdrop-blur">
+            <div className="flex items-center gap-3">
+              <SidebarTrigger data-testid="button-sidebar-toggle" />
+              <div className="h-8 w-px bg-border" aria-hidden />
+              <span className="text-sm font-medium text-muted-foreground">Freelancer OS</span>
+            </div>
             <ThemeToggle />
           </header>
-          <main className="flex-1 overflow-auto p-8">
-            {children}
+          <main className="flex-1 overflow-auto">
+            <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-8">
+              {children}
+            </div>
           </main>
         </div>
       </div>
