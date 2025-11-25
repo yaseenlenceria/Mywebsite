@@ -1,3 +1,3 @@
-import app from '../server/index-vercel.js';
+import app from '../dist/vercel.js';
 
 export default app;
